@@ -29,6 +29,21 @@ export function Footer() {
         </div>
         <section className="flex flex-col gap-2 sm:gap-0">
           <Info
+            href="https://github.com/identityofsine/Noisime"
+            className="cursor-pointer"
+            data-umami-event="Fork Link"
+          >
+            Forked by
+          </Info>
+          <Info
+            href="https://github.com/identityofsine"
+            data-umami-event="Author Link"
+          >
+            by <span className="font-bold">identityofsine</span>
+          </Info>
+        </section>
+        <section className="flex flex-col gap-2 sm:gap-0">
+          <Info
             href="https://github.com/mateusfg7/Noisekun/blob/master/LICENSE"
             className="cursor-pointer"
             data-umami-event="License Link"

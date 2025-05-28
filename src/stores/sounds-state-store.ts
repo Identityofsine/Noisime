@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 
 export type SoundState = {
   id: string
+  fileId?: string
   active: boolean
   volume: number
   loaded: boolean

@@ -13,7 +13,7 @@ export const Header: React.FC = () => {
   return (
     <header className="relative flex h-[10vh] items-center justify-between gap-5 px-6 shadow-header transition-all md:h-[13vh]">
       <h1 className="text-2xl font-semibold text-primary-foreground">
-        <Link href="/">Noisekun</Link>
+        <Link href="/">Noisime</Link>
       </h1>
       <div className="absolute left-1/2 hidden -translate-x-1/2 sm:block">
         <Pomodoro />

@@ -1,9 +1,9 @@
 {
-  "name": "Noisekun",
-  "short_name": "Noisekun",
-  "description": "Listen combinations of ambient sounds for relaxing** or getting more productive on your task!",
-  "theme_color": "#0485B4",
-  "background_color": "#0485B4",
+  "name": "Noisime",
+  "short_name": "Noisime",
+  "description": "A fork of Noisli, Noisime is a simple and beautiful sound generator that helps you focus, relax, and sleep better. Create your own ambient soundscapes with a variety of sounds.",
+  "theme_color": "#fe6d73",
+  "background_color": "#fe6d73",
   "categories": [
     "sound",
     "noise",

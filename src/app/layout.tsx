@@ -6,9 +6,8 @@ import { Toaster } from 'react-hot-toast'
 
 import '../styles/global.css'
 
-const APP_NAME = 'Noisekun'
-const APP_DESCRIPTION =
-  'Listen combinations of ambient sounds for relaxing or getting more productive on your task!'
+const APP_NAME = 'Noisime'
+const APP_DESCRIPTION = 'A simple fork of Noisli, now with more sounds!'
 const APP_URL = process.env.HOSTNAME
   ? `https://${process.env.HOSTNAME}`
   : 'http://localhost:3000'

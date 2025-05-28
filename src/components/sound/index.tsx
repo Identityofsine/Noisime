@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDeepCompareEffect } from 'react-use'
 
 import type { Sound } from '~/data/sounds'
@@ -12,6 +12,7 @@ import { useUserInteractionStore } from '~/stores/user-interaction-store'
 import { useQueryState } from '~/hooks/use-query-state'
 
 import { VolumeController } from './volume-controller'
+import SoundSelector from './sound-selector'
 
 interface SoundButtonProps {
   sound: Sound
@@ -33,6 +34,7 @@ export const SoundButton: React.FC<SoundButtonProps> = ({ sound }) => {
   const [localSoundState, setLocalSoundState] = useState<SoundState>({
     active: false,
     id: sound.id,
+    fileId: sound.file?.at(0)?.soundId,
     volume: 1,
     loaded: false
   })
@@ -49,12 +51,33 @@ export const SoundButton: React.FC<SoundButtonProps> = ({ sound }) => {
     }
   }
 
+  const currentSound = useMemo(() => {
+    return (
+      sound.file.find(s => s.soundId === localSoundState.fileId) ||
+      sound.file[0]
+    )
+  }, [sound.file, localSoundState.fileId, localSoundState])
+
+  useEffect(() => {
+    if (!currentSound || !soundRef.current) return
+
+    const audio = soundRef.current
+
+    // Pause, change source, reload, then play (optional)
+    audio.pause()
+    audio.load()
+
+    // Optional: auto-play if needed
+    // audio.play()
+  }, [currentSound])
+
   useEffect(() => {
     const soundState = getSoundState(sound.id)
 
     let initialState = {
       id: sound.id,
       active: false,
+      fileId: sound.file?.at(0)?.soundId,
       volume: 1,
       loaded: false
     }
@@ -62,6 +85,7 @@ export const SoundButton: React.FC<SoundButtonProps> = ({ sound }) => {
     if (soundState) {
       initialState = {
         ...soundState,
+        fileId: soundState.fileId || sound.file?.at(0)?.soundId,
         active: false,
         loaded: false
       }
@@ -76,6 +100,7 @@ export const SoundButton: React.FC<SoundButtonProps> = ({ sound }) => {
             initialState = {
               id,
               volume: parseFloat(volume),
+              fileId: sound.file?.at(0)?.soundId,
               active: true,
               loaded: false
             }
@@ -106,10 +131,22 @@ export const SoundButton: React.FC<SoundButtonProps> = ({ sound }) => {
   const mountQueryParams = () => {
     const activeSounds = soundsStore
       .filter(item => item.active)
-      .map(item => `${item.id},${item.volume}`)
+      .map(item => `${item.id},${item.volume},${item.fileId}`)
       .join(';')
 
     setQuerySounds(activeSounds)
+  }
+
+  const handleSoundStateChange = (fileId: string) => {
+    const newState = {
+      ...localSoundState,
+      fileId,
+      active: true
+    }
+
+    setSoundState(newState)
+    setLocalSoundState(newState)
+    mountQueryParams()
   }
 
   useEffect(() => {
@@ -149,7 +186,7 @@ export const SoundButton: React.FC<SoundButtonProps> = ({ sound }) => {
         preload="auto"
         loop
       >
-        <source src={sound.file.url} type={sound.file.type} />
+        <source src={currentSound?.url} type={currentSound?.type} />
       </audio>
       <button
         data-umami-event={sound.title}
@@ -176,6 +213,16 @@ export const SoundButton: React.FC<SoundButtonProps> = ({ sound }) => {
         handleSoundVolume={volume => {
           setSoundState({ ...localSoundState, volume })
         }}
+      />
+      <SoundSelector
+        isActive={
+          localSoundState.active && localSoundState.loaded && userHasInteracted
+        }
+        sounds={sound.file.map(file => ({
+          ...file,
+          soundId: file.soundId || sound.id
+        }))}
+        handleSoundSelect={handleSoundStateChange}
       />
     </div>
   )
